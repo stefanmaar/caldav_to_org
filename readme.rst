@@ -41,7 +41,33 @@ prefer. This names have no influence on the output file.
     # url for direct download of ics file
     url=https://website.com/dav/calendar/personal?export
 
-3 Contributions
+3 Use
+-----
+
+This package installs and executable script. Just call it directly
+
+.. code:: bash
+
+    org_agenda_sync
+
+It supports some commands line options
+
+.. code:: bash
+
+    org_agenda_sync -h
+
+::
+
+    usage: org_agenda_sync [-h] [-f] [-v]
+
+    Translate CalDav Agenda to orgfile
+
+    optional arguments:
+      -h, --help     show this help message and exit
+      -f, --force    Force Download of Caldav files
+      -v, --verbose
+
+4 Contributions
 ---------------
 
 You can kindly tip me for this project
@@ -49,7 +75,7 @@ You can kindly tip me for this project
 Stellar
     GDPTOFND6HSE5AVHPRXOCJFOA6NPFB65JAEWKTN23EBUGBB2AU4PLIBD
 
-4 License
+5 License
 ---------
 
 ::

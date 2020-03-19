@@ -30,6 +30,28 @@ passwordstore=Correos/mx.tribe29.com
 # url for direct download of ics file
 url=https://website.com/dav/calendar/personal?export
 #+END_SRC
+* Use
+This package installs and executable script. Just call it directly
+#+BEGIN_SRC bash
+org_agenda_sync
+#+END_SRC
+
+It supports some commands line options
+#+BEGIN_SRC bash :results output :exports both
+org_agenda_sync -h
+#+END_SRC
+
+#+RESULTS:
+: usage: org_agenda_sync [-h] [-f] [-v]
+:
+: Translate CalDav Agenda to orgfile
+:
+: optional arguments:
+:   -h, --help     show this help message and exit
+:   -f, --force    Force Download of Caldav files
+:   -v, --verbose
+
+
 * Contributions
 You can kindly tip me for this project
 
