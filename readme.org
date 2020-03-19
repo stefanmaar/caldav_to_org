@@ -10,6 +10,14 @@ agenda file.
 
 * Install
 #+BEGIN_SRC bash
+pip install org-mode-agenda
+#+END_SRC
+** Development
+To use the developer version
+
+#+BEGIN_SRC bash
+git clone https://gitlab.com/Titan-C/org-mode-agenda.git
+cd org-mode-agenda
 python setup.py develop
 #+END_SRC
 * Configuration

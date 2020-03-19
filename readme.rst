@@ -17,6 +17,17 @@ agenda file.
 
 .. code:: bash
 
+    pip install org-mode-agenda
+
+1.1 Development
+~~~~~~~~~~~~~~~
+
+To use the developer version
+
+.. code:: bash
+
+    git clone https://gitlab.com/Titan-C/org-mode-agenda.git
+    cd org-mode-agenda
     python setup.py develop
 
 2 Configuration
