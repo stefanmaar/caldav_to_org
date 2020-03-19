@@ -1,5 +1,9 @@
 #+TITLE:  Orgmode Agenda utility
 
+[[https://gitlab.com/Titan-C/org-mode-agenda/-/commits/master][https://gitlab.com/Titan-C/org-mode-agenda/badges/master/pipeline.svg]]
+[[https://www.gnu.org/licenses/gpl-3.0][https://img.shields.io/badge/License-GPL%20v3-blue.svg]]
+
+
 This python script downloads your caldav calendars and generates and org
 agenda file.
 
@@ -25,6 +29,10 @@ passwordstore=Correos/mx.tribe29.com
 # url for direct download of ics file
 url=https://website.com/dav/calendar/personal?export
 #+END_SRC
+* Contributions
+You can kindly tip me for this project
+
+- Stellar :: GDPTOFND6HSE5AVHPRXOCJFOA6NPFB65JAEWKTN23EBUGBB2AU4PLIBD
 * License
 #+begin_quote
     org-mode-agenda
