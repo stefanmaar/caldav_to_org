@@ -1,4 +1,5 @@
 #+TITLE:  Orgmode Agenda utility
+#+OPTIONS: toc:nil author:nil
 
 [[https://gitlab.com/Titan-C/org-mode-agenda/-/commits/master][https://gitlab.com/Titan-C/org-mode-agenda/badges/master/pipeline.svg]]
 [[https://www.gnu.org/licenses/gpl-3.0][https://img.shields.io/badge/License-GPL%20v3-blue.svg]]
@@ -17,7 +18,7 @@ where to write the output and days ahead and back from execution date.
 
 Then every new section is a calendar file. You can name sections as you
 prefer. This names have no influence on the output file.
-#+BEGIN_SRC conf
+#+BEGIN_SRC bash
 [DEFAULT]
 outfile=~/org/caldav.org
 ahead=90 # Days ahead from today

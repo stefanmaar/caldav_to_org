@@ -2,9 +2,6 @@
 Orgmode Agenda utility
 ======================
 
-    :Author: Óscar Nájera
-
-.. contents::
 
 .. image:: https://gitlab.com/Titan-C/org-mode-agenda/badges/master/pipeline.svg
     :target: https://gitlab.com/Titan-C/org-mode-agenda/-/commits/master
@@ -31,7 +28,7 @@ where to write the output and days ahead and back from execution date.
 Then every new section is a calendar file. You can name sections as you
 prefer. This names have no influence on the output file.
 
-.. code:: conf
+.. code:: bash
 
     [DEFAULT]
     outfile=~/org/caldav.org
