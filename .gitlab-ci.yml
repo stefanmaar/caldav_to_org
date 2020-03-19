@@ -26,13 +26,6 @@ python38:
   script: tox -e py38
 
 linters:
-  image: python:latest-alpine
+  image: python:3.8
   stage: test
   script: tox -e linters
-
-run:
-  script:
-    - python setup.py sdist
-  artifacts:
-    paths:
-      - dist/*

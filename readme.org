@@ -8,6 +8,11 @@ agenda file.
 python setup.py develop
 #+END_SRC
 * Configuration
+Edit the config file =~/.calendars.conf=. The =DEFAULT= section configures
+where to write the output and days ahead and back from execution date.
+
+Then every new section is a calendar file. You can name sections as you
+prefer. This names have no influence on the output file.
 #+BEGIN_SRC conf
 [DEFAULT]
 outfile=~/org/caldav.org
@@ -20,3 +25,18 @@ passwordstore=Correos/mx.tribe29.com
 # url for direct download of ics file
 url=https://website.com/dav/calendar/personal?export
 #+END_SRC
+* License
+#+begin_quote
+    org-mode-agenda
+    Copyright (C) 2020  Óscar Nájera
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+#+end_quote
