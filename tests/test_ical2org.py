@@ -1,9 +1,23 @@
+import os
+import time
+from contextlib import contextmanager
+
 import pytest
 from freezegun import freeze_time
 
 from icalendar import Calendar
 from org_agenda import ical2org
 
+@contextmanager
+def on_date(date, timezone):
+    """Set the time and timezone for the test"""
+
+    os.environ['TZ'] = timezone
+    time.tzset()
+    with freeze_time(date):
+        yield
+    os.environ.pop('TZ')
+    time.tzset()
 
 @pytest.mark.parametrize(
     "ics, result",
@@ -121,7 +135,7 @@ END:VEVENT
         ),
     ],
 )
-@freeze_time("2020-03-19")
+@on_date("2020-03-19", "Europe/Berlin")
 def test_conversion(ics, result):
     events = "\n\n".join(ical2org.org_events([ics], 40, 30))
     print(events)
