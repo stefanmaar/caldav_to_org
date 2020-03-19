@@ -3,7 +3,7 @@ from setuptools import setup
 package = "org-mode-agenda"
 version = "0.1"
 
-with open("readme.rst", encoding='utf-8') as f:
+with open("README.rst", encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
