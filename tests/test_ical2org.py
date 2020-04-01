@@ -31,10 +31,11 @@ LOCATION:forest
 DTSTART;TZID="Europe/Berlin":20200319T103000
 DTEND;TZID="Europe/Berlin":20200319T113000
 DESCRIPTION:take some meat
-CATEGORIES:pets
+CATEGORIES:pets,dragons
+CATEGORIES:shopping
 END:VEVENT
 END:VCALENDAR""",
-            """* Feed the dragons  :pets:
+            """* Feed the dragons  :pets:dragons:shopping:
 :PROPERTIES:
 :LOCATION: forest
 :UID: first
@@ -76,8 +77,9 @@ UID:fullday
 SUMMARY:Home day
 DTSTART;VALUE=DATE:20200312
 DTEND;VALUE=DATE:20200313
+CATEGORIES:cleanup
 END:VEVENT""",
-            """* Home day
+            """* Home day  :cleanup:
 :PROPERTIES:
 :UID: fullday
 :END:

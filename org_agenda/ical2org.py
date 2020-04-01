@@ -90,9 +90,15 @@ class OrgEntry:
     @property
     def tags(self):
         "Tags"
-        tags = self.event.get("CATEGORIES")
-        if tags is not None:
-            tags = tags.to_ical().decode("utf-8").replace(" ", "-").replace(",", ":")
+        tags = self.event.get("CATEGORIES", [])
+        if not isinstance(tags, list):
+            tags = [tags]
+
+        tags = ":".join(
+            tag.to_ical().decode("utf-8").replace(" ", "-").replace(",", ":")
+            for tag in tags
+        )
+        if tags:
             return f"  :{tags}:"
         return ""
 
