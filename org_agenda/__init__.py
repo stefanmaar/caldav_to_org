@@ -19,6 +19,7 @@ import subprocess
 
 import requests
 from org_agenda.ical2org import org_events
+from org_agenda.cards2org import org_contacts
 
 LOGGER = logging.getLogger("Org_calendar")
 LOGGER.addHandler(logging.StreamHandler())
@@ -81,12 +82,13 @@ def write_agenda(config, args):
         fid.write("\n")
 
 
-def write_addressbook(args):
+def write_addressbook(config, args):
     addresses = get_resource(config, "addressbooks", args.force)
     outfile = os.path.expanduser(config["DEFAULT"]["contacts_outfile"])
+
     with open(outfile, "w") as fid:
         LOGGER.info("Writing contacts to: %s", outfile)
-        fid.write("\n\n".join(org_events(calendars, ahead, back)))
+        fid.write("\n\n".join(org_contacts(addresses)))
         fid.write("\n")
 
 
