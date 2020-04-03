@@ -9,6 +9,7 @@ Convert Caldav to org-contacts
 
 import dateutil.parser
 import vobject
+from org_agenda import org
 
 
 def get_properties(contact):
@@ -69,33 +70,18 @@ def get_properties(contact):
             yield name, value + attribs
 
 
-class OrgContact:
+class OrgContact(org.OrgNode):
     def __init__(self, contact):
-        self.name = contact.fn.value
-        self.contact = contact
-        self.note = contact.getChildValue("note", "")
+        super().__init__(contact)
+        self.property_parser = get_properties
+        self.heading = contact.fn.value
+        self.description = contact.getChildValue("note", "")
+        self.dates = ""
 
     @property
     def tags(self):
         "Tags"
-        tags = self.contact.getChildValue("categories", [])
-        if not isinstance(tags, list):
-            tags = [tags]
-
-        tags = ":".join(tags)
-
-        if tags:
-            return f"  :{tags}:"
-        return ""
-
-    @property
-    def properties(self):
-        "Property box"
-        props = "\n".join(":%s: %s" % (k, v) for k, v in get_properties(self.contact))
-        return f""":PROPERTIES:\n{props}\n:END:\n""" if props else ""
-
-    def __str__(self):
-        return f"* {self.name}{self.tags}\n{self.properties}{self.note}".strip()
+        return org.tags(self.contact.getChildValue("categories", []))
 
 
 def org_contacts(addressbooks):

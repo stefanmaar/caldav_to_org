@@ -13,6 +13,7 @@ from dateutil.rrule import rrulestr
 from icalendar import Calendar
 from pytz import utc
 from tzlocal import get_localzone
+from org_agenda import org
 
 # inspiration from
 # https://www.nylas.com/blog/calendar-events-rrules/
@@ -68,12 +69,13 @@ def get_properties(event):
             yield "APPT_WARNTIME", str(trigger)
 
 
-class OrgEntry:
+class OrgEntry(org.OrgNode):
     """Documentation for OrgEntry"""
 
     def __init__(self, event):
-        self.event = event
-        self.summary = event["SUMMARY"]
+        super().__init__(event)
+        self.property_parser = get_properties
+        self.heading = event["SUMMARY"]
         self.dtstart = put_tz(event["DTSTART"].dt)
         if "DTEND" in event:
             self.dtend = put_tz(event["DTEND"].dt)
@@ -90,23 +92,10 @@ class OrgEntry:
     @property
     def tags(self):
         "Tags"
-        tags = self.event.get("CATEGORIES", [])
-        if not isinstance(tags, list):
-            tags = [tags]
-
-        tags = ":".join(
-            tag.to_ical().decode("utf-8").replace(" ", "-").replace(",", ":")
-            for tag in tags
+        return org.tags(
+            self.entry.get("CATEGORIES", []),
+            lambda x: x.to_ical().decode("utf-8").replace(" ", "-").replace(",", ":"),
         )
-        if tags:
-            return f"  :{tags}:"
-        return ""
-
-    @property
-    def properties(self):
-        "Property box"
-        props = "\n".join(":%s: %s" % (k, v) for k, v in get_properties(self.event))
-        return f""":PROPERTIES:\n{props}\n:END:\n""" if props else ""
 
     def date_block(self, ahead=90, back=28):
         "Evaluate which active dates the event has"
@@ -115,13 +104,13 @@ class OrgEntry:
         start = now - timedelta(back)
         end = now + timedelta(ahead)
 
-        if "RRULE" in self.event:
+        if "RRULE" in self.entry:
             rule = rrulestr(
-                self.event["RRULE"].to_ical().decode("utf-8"),
+                self.entry["RRULE"].to_ical().decode("utf-8"),
                 dtstart=self.dtstart,
                 forceset=True,
             )
-            exdates = self.event.get("EXDATE", [])
+            exdates = self.entry.get("EXDATE", [])
             for dates in (exdates,) if not isinstance(exdates, list) else exdates:
                 for date in dates.dts:
                     rule.exdate(put_tz(date.dt))
@@ -135,12 +124,6 @@ class OrgEntry:
             self.dates = org_interval(self.dtstart, self.duration, get_localzone())
 
         return self.dates
-
-    def __str__(self):
-        return (
-            f"* {self.summary}{self.tags}\n"
-            f"{self.properties}{self.dates}{self.description}"
-        ).strip()
 
 
 def org_events(calendars, ahead, back):
