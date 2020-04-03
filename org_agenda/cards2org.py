@@ -13,51 +13,47 @@ from org_agenda import org
 
 
 def get_properties(contact):
-    for p in contact.getChildren():
+    "Extract all contact elements as properties"
+    ignore = ["VERSION", "PRODID", "FN", "NOTE", "CATEGORIES"]
 
-        name = p.name
-        value = p.value
+    for prop in contact.getChildren():
+
+        name = prop.name
+        value = prop.value
         # Special treatment for some fields:
-        if p.name in [
-            "VERSION",
-            "PRODID",
-            "FN",
-            "NOTE",
-            "CATEGORIES",
-        ] or p.name.startswith("X-"):
+        if prop.name in ignore or prop.name.startswith("X-"):
             continue
 
-        if p.name == "N":
+        if prop.name == "N":
             value = "%s;%s;%s;%s;%s" % (
-                p.value.family,
-                p.value.given,
-                p.value.additional,
-                p.value.prefix,
-                p.value.suffix,
+                prop.value.family,
+                prop.value.given,
+                prop.value.additional,
+                prop.value.prefix,
+                prop.value.suffix,
             )
 
-        if p.name == "ADR":
-            # TODO Make the formatting sensitive to X-ABADR:
+        if prop.name == "ADR":
             value = (
-                p.value.street,
-                p.value.code + " " + p.value.city,
-                p.value.region,
-                p.value.country,
-                p.value.extended,
-                p.value.box,
+                prop.value.street,
+                prop.value.code + " " + prop.value.city,
+                prop.value.region,
+                prop.value.country,
+                prop.value.extended,
+                prop.value.box,
             )
             value = ", ".join([x for x in value if x.strip() != ""])
             name = "ADDRESS"
 
-        if p.name == "REV":
-            value = dateutil.parser.parse(p.value)
+        if prop.name == "REV":
+            value = dateutil.parser.parse(prop.value)
             value = value.strftime("[%Y-%m-%d %a %H:%M]")
 
-        if p.name == "TEL":
+        if prop.name == "TEL":
             name = "PHONE"
 
         # Collect type attributes:
-        attribs = ", ".join(p.params.get("TYPE", []))
+        attribs = ", ".join(prop.params.get("TYPE", []))
         if attribs:
             attribs = " (%s)" % attribs
 
@@ -70,7 +66,9 @@ def get_properties(contact):
             yield name, value + attribs
 
 
-class OrgContact(org.OrgNode):
+class OrgContact(org.OrgEntry):
+    "Contact representation in Org-mode"
+
     def __init__(self, contact):
         super().__init__(contact)
         self.property_parser = get_properties
@@ -81,10 +79,11 @@ class OrgContact(org.OrgNode):
     @property
     def tags(self):
         "Tags"
-        return org.tags(self.contact.getChildValue("categories", []))
+        return org.tags(self.entry.getChildValue("categories", []))
 
 
 def org_contacts(addressbooks):
+    "Iterate all addressbooks to generate contacts"
     for book in map(vobject.readComponents, addressbooks):
         for contact in book:
             yield str(OrgContact(contact))

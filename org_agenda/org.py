@@ -22,9 +22,20 @@ def tags(tag_list, process=lambda x: x):
     return ""
 
 
-class OrgNode:
+def string(node):
+    "string representation of org entry"
+    return (
+        f"* {node.heading}{node.tags}\n"
+        f"{node.properties}{node.dates}{node.description}"
+    ).strip()
+
+
+class OrgEntry:
+    "Org-Mode basic entry"
+
     def __init__(self, entry):
         self.entry = entry
+        self.property_parser = lambda x: []
 
     @property
     def properties(self):
@@ -35,7 +46,4 @@ class OrgNode:
         return f""":PROPERTIES:\n{props}\n:END:\n""" if props else ""
 
     def __str__(self):
-        return (
-            f"* {self.heading}{self.tags}\n"
-            f"{self.properties}{self.dates}{self.description}"
-        ).strip()
+        return string(self)

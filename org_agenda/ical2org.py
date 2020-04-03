@@ -69,7 +69,7 @@ def get_properties(event):
             yield "APPT_WARNTIME", str(trigger)
 
 
-class OrgEntry(org.OrgNode):
+class OrgEvent(org.OrgEntry):
     """Documentation for OrgEntry"""
 
     def __init__(self, event):
@@ -130,10 +130,10 @@ def org_events(calendars, ahead, back):
     "Iterator of all events in calendars from [today-back;today+ahead]"
 
     events = (
-        OrgEntry(entry)
+        OrgEvent(entry)
         for ical in map(Calendar.from_ical, calendars)
         for entry in ical.walk()
         if entry.name == "VEVENT"
     )
 
-    return map(str, (x for x in events if x.date_block(ahead, back)))
+    return (str(x) for x in events if x.date_block(ahead, back))

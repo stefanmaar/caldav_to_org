@@ -61,6 +61,7 @@ def download(url, section, force):
 
 
 def get_resource(config, resource, force):
+    "RESOURCE{calendars,addressbooks} are returned given the CONFIG's urls, FORCE download"
 
     for section in config.sections():
         for entry in config[section].get(resource, "").split():
@@ -69,6 +70,7 @@ def get_resource(config, resource, force):
 
 
 def write_agenda(config, args):
+    "Write the agenda to file"
 
     calendars = get_resource(config, "calendars", args.force)
 
@@ -83,6 +85,7 @@ def write_agenda(config, args):
 
 
 def write_addressbook(config, args):
+    "Write Contacts to file"
     addresses = get_resource(config, "addressbooks", args.force)
     outfile = os.path.expanduser(config["DEFAULT"]["contacts_outfile"])
 
