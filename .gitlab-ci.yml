@@ -30,3 +30,8 @@ linters:
   image: python:3.8
   stage: test
   script: tox -e linters
+
+mypy:
+  image: python:3.8
+  stage: test
+  script: tox -e mypy

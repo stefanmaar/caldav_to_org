@@ -10,9 +10,9 @@ Convert icalendar elements into org-mode elements
 from datetime import datetime, timedelta
 from dateutil import tz
 from dateutil.rrule import rrulestr
-from icalendar import Calendar
+from icalendar import Calendar  # type: ignore
 from pytz import utc
-from tzlocal import get_localzone
+from tzlocal import get_localzone  # type: ignore
 from org_agenda import org
 
 # inspiration from

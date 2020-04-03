@@ -8,7 +8,7 @@ Convert Caldav to org-contacts
 # Inspired https://gist.github.com/tmalsburg/9747104
 
 import dateutil.parser
-import vobject
+import vobject  # type: ignore
 from org_agenda import org
 
 

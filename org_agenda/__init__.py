@@ -25,7 +25,7 @@ LOGGER = logging.getLogger("Org_calendar")
 LOGGER.addHandler(logging.StreamHandler())
 
 
-def passwordstore(address: str) -> str:
+def passwordstore(address: str) -> bytes:
     """Get password from passwordstore address"""
 
     process = subprocess.run(
