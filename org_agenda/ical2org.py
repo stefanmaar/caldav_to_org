@@ -69,6 +69,21 @@ def get_properties(event):
             yield "APPT_WARNTIME", str(trigger)
 
 
+def rrule(org_event):
+    "create event repetition rule"
+    rule = rrulestr(
+        org_event.entry["RRULE"].to_ical().decode("utf-8"),
+        dtstart=org_event.dtstart,
+        forceset=True,
+    )
+    exdates = org_event.entry.get("EXDATE", [])
+    for dates in (exdates,) if not isinstance(exdates, list) else exdates:
+        for date in dates.dts:
+            rule.exdate(put_tz(date.dt))
+
+    return rule
+
+
 class OrgEvent(org.OrgEntry):
     """Documentation for OrgEntry"""
 
@@ -105,16 +120,7 @@ class OrgEvent(org.OrgEntry):
         end = now + timedelta(ahead)
 
         if "RRULE" in self.entry:
-            rule = rrulestr(
-                self.entry["RRULE"].to_ical().decode("utf-8"),
-                dtstart=self.dtstart,
-                forceset=True,
-            )
-            exdates = self.entry.get("EXDATE", [])
-            for dates in (exdates,) if not isinstance(exdates, list) else exdates:
-                for date in dates.dts:
-                    rule.exdate(put_tz(date.dt))
-
+            rule = rrule(self)
             self.dates = "".join(
                 org_interval(event_start, self.duration, get_localzone())
                 for event_start in rule.between(after=start, before=end)
