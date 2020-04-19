@@ -69,13 +69,24 @@ def get_properties(event):
             yield "APPT_WARNTIME", str(trigger)
 
 
+def rrule_cleanup(rrule_conf):
+    "Repetition rule needs to respect some constrains, return clean string"
+    until = rrule_conf.get("UNTIL")
+    if until:
+        rrule_conf["UNTIL"][0] = until[0].astimezone(tz.UTC)
+
+    return rrule_conf.to_ical().decode("utf-8")
+
+
 def rrule(org_event, exceptions=None):
-    "create event repetition rule"
+    "Create event repetition rule"
+
     rule = rrulestr(
-        org_event.entry["RRULE"].to_ical().decode("utf-8"),
+        rrule_cleanup(org_event.entry["RRULE"]),
         dtstart=org_event.dtstart,
         forceset=True,
     )
+
     exdates = org_event.entry.get("EXDATE", [])
     for dates in (exdates,) if not isinstance(exdates, list) else exdates:
         for date in dates.dts:
@@ -83,7 +94,10 @@ def rrule(org_event, exceptions=None):
 
     if exceptions:
         for date in exceptions:
-            rule.exdate(put_tz(date.dt))
+            new_datetime = put_tz(date.dt).replace(
+                hour=org_event.dtstart.hour, minute=org_event.dtstart.minute
+            )
+            rule.exdate(new_datetime)
 
     return rule
 
@@ -133,34 +147,30 @@ class OrgEvent(org.OrgEntry):
 
 
 def changev(evlist, start, end):
+    "Clean repeating occurrences that have a specific event change"
+    if len(evlist) == 1:
+        return evlist
+
     mods = [e.entry.get("RECURRENCE-ID") for e in evlist]
     base_ind = mods.index(None)
     mods.pop(base_ind)
-    base = evlist.pop(base_ind)
 
+    base = evlist.pop(base_ind)
     base.date_block(start, end, mods)
+
     return [base] + evlist
 
 
 def org_calendar(ical, start, end):
+    "Return calendar time relevant calendar events"
     events = (OrgEvent(entry) for entry in ical.walk() if entry.name == "VEVENT")
     regular_events = {}
-    changed_events = {}
-    for x in events:
-        if x.date_block(start, end):
-            uid = x.entry.get("UID")
-            if uid not in regular_events:
-                regular_events[uid] = x
-            else:
-                changed_events.setdefault(uid, []).append(x)
+    for event in events:
+        if event.date_block(start, end):
+            regular_events.setdefault(event.entry.get("UID"), []).append(event)
 
-    yield from map(str, regular_events.values())
-
-    for uid in changed_events:
-        changed_events[uid].append(regular_events.pop(uid))
-
-    for el in changed_events.values():
-        yield from map(str, changev(el, start, end))
+    for evlist in regular_events.values():
+        yield from map(str, changev(evlist, start, end))
 
 
 def org_events(calendars, ahead, back):
@@ -169,7 +179,6 @@ def org_events(calendars, ahead, back):
     now = datetime.now(utc)
     start = now - timedelta(back)
     end = now + timedelta(ahead)
-    res = []
 
     for ical in map(Calendar.from_ical, calendars):
         yield from org_calendar(ical, start, end)
