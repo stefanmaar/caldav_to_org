@@ -80,7 +80,7 @@ def write_agenda(config, args):
 
     with open(outfile, "w") as fid:
         LOGGER.info("Writing calendars to: %s", outfile)
-        fid.write("\n\n".join(org_events(calendars, ahead, back)))
+        fid.write("\n\n".join(dict.fromkeys(org_events(calendars, ahead, back))))
         fid.write("\n")
 
 

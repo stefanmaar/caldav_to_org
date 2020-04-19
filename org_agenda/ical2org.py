@@ -132,6 +132,37 @@ class OrgEvent(org.OrgEntry):
         return self.dates
 
 
+def changev(evlist, start, end):
+    mods = [e.entry.get("RECURRENCE-ID") for e in evlist]
+    base_ind = mods.index(None)
+    mods.pop(base_ind)
+    base = evlist.pop(base_ind)
+
+    base.date_block(start, end, mods)
+    return [base] + evlist
+
+
+def org_calendar(ical, start, end):
+    events = (OrgEvent(entry) for entry in ical.walk() if entry.name == "VEVENT")
+    regular_events = {}
+    changed_events = {}
+    for x in events:
+        if x.date_block(start, end):
+            uid = x.entry.get("UID")
+            if uid not in regular_events:
+                regular_events[uid] = x
+            else:
+                changed_events.setdefault(uid, []).append(x)
+
+    yield from map(str, regular_events.values())
+
+    for uid in changed_events:
+        changed_events[uid].append(regular_events.pop(uid))
+
+    for el in changed_events.values():
+        yield from map(str, changev(el, start, end))
+
+
 def org_events(calendars, ahead, back):
     "Iterator of all events in calendars from [today-back;today+ahead]"
 
@@ -141,32 +172,4 @@ def org_events(calendars, ahead, back):
     res = []
 
     for ical in map(Calendar.from_ical, calendars):
-        events = (OrgEvent(entry) for entry in ical.walk() if entry.name == "VEVENT")
-        regular_events = {}
-        changed_events = {}
-        for x in events:
-            if x.date_block(start, end):
-                uid = x.entry.get("UID")
-                if uid not in regular_events:
-                    regular_events[uid] = x
-                else:
-                    changed_events.setdefault(uid, []).append(x)
-
-        for uid in changed_events:
-            changed_events[uid].append(regular_events.pop(uid))
-
-        def changev(evlist, start, end):
-            mods = [e.entry.get("RECURRENCE-ID") for e in evlist]
-            base_ind = mods.index(None)
-            mods.pop(base_ind)
-            base = evlist.pop(base_ind)
-
-            base.date_block(start, end, mods)
-            return [base] + evlist
-
-        res.extend(map(str, regular_events.values()))
-
-        for el in changed_events.values():
-            res.extend(map(str, changev(el, start, end)))
-
-    return res
+        yield from org_calendar(ical, start, end)
