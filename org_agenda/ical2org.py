@@ -69,7 +69,7 @@ def get_properties(event):
             yield "APPT_WARNTIME", str(trigger)
 
 
-def rrule(org_event):
+def rrule(org_event, exceptions=None):
     "create event repetition rule"
     rule = rrulestr(
         org_event.entry["RRULE"].to_ical().decode("utf-8"),
@@ -79,6 +79,10 @@ def rrule(org_event):
     exdates = org_event.entry.get("EXDATE", [])
     for dates in (exdates,) if not isinstance(exdates, list) else exdates:
         for date in dates.dts:
+            rule.exdate(put_tz(date.dt))
+
+    if exceptions:
+        for date in exceptions:
             rule.exdate(put_tz(date.dt))
 
     return rule
@@ -112,15 +116,11 @@ class OrgEvent(org.OrgEntry):
             lambda x: x.to_ical().decode("utf-8").replace(" ", "-").replace(",", ":"),
         )
 
-    def date_block(self, ahead=90, back=28):
+    def date_block(self, start, end, exceptions=None):
         "Evaluate which active dates the event has"
 
-        now = datetime.now(utc)
-        start = now - timedelta(back)
-        end = now + timedelta(ahead)
-
         if "RRULE" in self.entry:
-            rule = rrule(self)
+            rule = rrule(self, exceptions)
             self.dates = "".join(
                 org_interval(event_start, self.duration, get_localzone())
                 for event_start in rule.between(after=start, before=end)
@@ -135,11 +135,38 @@ class OrgEvent(org.OrgEntry):
 def org_events(calendars, ahead, back):
     "Iterator of all events in calendars from [today-back;today+ahead]"
 
-    events = (
-        OrgEvent(entry)
-        for ical in map(Calendar.from_ical, calendars)
-        for entry in ical.walk()
-        if entry.name == "VEVENT"
-    )
+    now = datetime.now(utc)
+    start = now - timedelta(back)
+    end = now + timedelta(ahead)
+    res = []
 
-    return (str(x) for x in events if x.date_block(ahead, back))
+    for ical in map(Calendar.from_ical, calendars):
+        events = (OrgEvent(entry) for entry in ical.walk() if entry.name == "VEVENT")
+        regular_events = {}
+        changed_events = {}
+        for x in events:
+            if x.date_block(start, end):
+                uid = x.entry.get("UID")
+                if uid not in regular_events:
+                    regular_events[uid] = x
+                else:
+                    changed_events.setdefault(uid, []).append(x)
+
+        for uid in changed_events:
+            changed_events[uid].append(regular_events.pop(uid))
+
+        def changev(evlist, start, end):
+            mods = [e.entry.get("RECURRENCE-ID") for e in evlist]
+            base_ind = mods.index(None)
+            mods.pop(base_ind)
+            base = evlist.pop(base_ind)
+
+            base.date_block(start, end, mods)
+            return [base] + evlist
+
+        res.extend(map(str, regular_events.values()))
+
+        for el in changed_events.values():
+            res.extend(map(str, changev(el, start, end)))
+
+    return res
