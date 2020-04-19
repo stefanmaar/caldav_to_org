@@ -113,7 +113,9 @@ def parse_arguments():
     parser.add_argument(
         "-f", "--force", help="Force Download of Caldav files", action="store_true"
     )
-    parser.add_argument("--contacts", action="store_true")
+    parser.add_argument(
+        "--contacts", action="store_true", help="Download carddav to org-contacts"
+    )
     parser.add_argument("-v", "--verbose", action="count", default=0)
 
     return parser.parse_args()

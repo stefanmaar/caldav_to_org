@@ -8,6 +8,9 @@
 This python script downloads your caldav calendars and generates and org
 agenda file.
 
+It can also download your carddav addressbook and generate an org-contacts
+file.
+
 * Install
 #+BEGIN_SRC bash
 pip install org-mode-agenda
@@ -33,10 +36,20 @@ ahead=90 # Days ahead from today
 back=28 # Days in the past
 
 [work] # Calendar name
-user = on
-passwordstore=Correos/mx.tribe29.com
+user = user
+# This assumes you use passwordstore and this is your account path
+passwordstore=mailboxes/work_account
 # url for direct download of ics file
-url=https://website.com/dav/calendar/personal?export
+url=https://website.com/dav/calendar/{}?export
+calendars=personal
+
+# Test with Carddav contacts
+[contacts]
+outfile=~/org/contacts.org
+user = user
+passwordstore=mailboxes/work_account
+url=https://website.com/dav/addressbooks/users/user/{}?export
+addressbooks=Contacts
 #+END_SRC
 * Use
 This package installs and executable script. Just call it directly
@@ -50,13 +63,14 @@ org_agenda_sync -h
 #+END_SRC
 
 #+RESULTS:
-: usage: org_agenda_sync [-h] [-f] [-v]
+: usage: org_agenda_sync [-h] [-f] [--contacts] [-v]
 :
 : Translate CalDav Agenda to orgfile
 :
 : optional arguments:
 :   -h, --help     show this help message and exit
 :   -f, --force    Force Download of Caldav files
+:   --contacts     Download carddav to org-contacts
 :   -v, --verbose
 
 
