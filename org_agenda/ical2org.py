@@ -158,7 +158,7 @@ def changev(evlist, start, end):
     base = evlist.pop(base_ind)
     base.date_block(start, end, mods)
 
-    return [base] + evlist
+    return ([base] if base.dates else []) + evlist
 
 
 def org_calendar(ical, start, end):
