@@ -148,10 +148,11 @@ class OrgEvent(org.OrgEntry):
 
 def changev(evlist, start, end):
     "Clean repeating occurrences that have a specific event change"
-    if len(evlist) == 1:
+    mods = [e.entry.get("RECURRENCE-ID") for e in evlist]
+
+    if len(evlist) == 1 or None not in mods:
         return evlist
 
-    mods = [e.entry.get("RECURRENCE-ID") for e in evlist]
     base_ind = mods.index(None)
     mods.pop(base_ind)
 
