@@ -6,6 +6,9 @@ version = "0.1"
 with open("README.rst", encoding='utf-8') as f:
     long_description = f.read()
 
+with open("requirements.txt") as fp:
+    install_requires=fp.read()
+
 setup(
     name=package,
     version=version,
@@ -17,6 +20,7 @@ setup(
     url="https://gitlab.com/Titan-C/org-mode-agenda",
     packages=["org_agenda"],
     entry_points={"console_scripts": ["org_agenda_sync = org_agenda:main"]},
+    install_requires=install_requires,
     license="GNU General Public License v3 or later (GPLv3+)",
     classifiers=[
         "Programming Language :: Python :: 3",
