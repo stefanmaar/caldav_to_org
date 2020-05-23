@@ -1,4 +1,0 @@
-requests
-icalendar
-tzlocal
-vobject
