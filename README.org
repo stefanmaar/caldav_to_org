@@ -78,6 +78,8 @@ org_agenda_sync -h
 You can kindly tip me for this project
 
 - Stellar :: GDPTOFND6HSE5AVHPRXOCJFOA6NPFB65JAEWKTN23EBUGBB2AU4PLIBD
+- liberapay :: [[https://liberapay.com/Titan-C/][Titan-C]]
+
 * License
 #+begin_quote
     org-mode-agenda
