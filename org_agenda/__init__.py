@@ -71,11 +71,17 @@ def get_resource(config, resource, force):
 def write_agenda(config, args):
     "Write the agenda to file"
 
-    calendars = get_resource(config, "calendars", args.force)
+    if args.url:
+        calendars = [requests.get(args.url, auth=("username", "")).text]
+    else:
+        calendars = get_resource(config, "calendars", args.force)
 
     ahead = int(config["DEFAULT"].get("ahead", 50))
     back = int(config["DEFAULT"].get("back", 14))
     outfile = os.path.expanduser(config["DEFAULT"]["agenda_outfile"])
+
+    if args.url:
+        print("\n\n".join(dict.fromkeys(org_events(calendars, ahead, back))))
 
     with open(outfile, "w") as fid:
         LOGGER.info("Writing calendars to: %s", outfile)
@@ -114,6 +120,9 @@ def parse_arguments():
     )
     parser.add_argument(
         "--contacts", action="store_true", help="Download carddav to org-contacts"
+    )
+    parser.add_argument(
+        "-r", "--url", help="force direct download from url no auth"
     )
     parser.add_argument("-v", "--verbose", action="count", default=0)
 
