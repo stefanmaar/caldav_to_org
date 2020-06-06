@@ -57,10 +57,12 @@ def put_tz(date_time):
 
 def get_properties(event):
     "Extract relevant properties"
-    properties = ["LOCATION", "UID"]
+    properties = ("LOCATION", "UID")
     for prop in properties:
         value = event.get(prop, "").strip()
         if value:
+            if prop == "UID":
+                prop = "ID"
             yield prop, value
 
     for comp in event.subcomponents:

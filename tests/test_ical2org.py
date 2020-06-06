@@ -38,7 +38,7 @@ END:VCALENDAR""",
             """* Feed the dragons  :pets:dragons:shopping:
 :PROPERTIES:
 :LOCATION: forest
-:UID: first
+:ID: first
 :END:
   <2020-03-19 Thu 10:30>--<2020-03-19 Thu 11:30>
 take some meat""",
@@ -64,7 +64,7 @@ END:VCALENDAR""",
             """* Go hunting
 :PROPERTIES:
 :LOCATION: big forest
-:UID: second
+:ID: second
 :APPT_WARNTIME: 15
 :END:
   <2020-03-19 Thu 18:30>--<2020-03-19 Thu 19:15>
@@ -81,7 +81,7 @@ CATEGORIES:cleanup
 END:VEVENT""",
             """* Home day  :cleanup:
 :PROPERTIES:
-:UID: fullday
+:ID: fullday
 :END:
   <2020-03-12 Thu>""",
             id="Full day",
@@ -97,7 +97,7 @@ EXDATE;TZID=Europe/Berlin:20200325T190000
 END:VEVENT""",
             """* Monthly meeting
 :PROPERTIES:
-:UID: forthofmonth
+:ID: forthofmonth
 :END:
   <2020-02-26 Wed 19:00>--<2020-02-26 Wed 21:00>
   <2020-04-22 Wed 19:00>--<2020-04-22 Wed 21:00>""",
@@ -120,7 +120,7 @@ END:VEVENT
             """* travel
 :PROPERTIES:
 :LOCATION: train
-:UID: J480MNXCKM88LL7UQ2ITQX
+:ID: J480MNXCKM88LL7UQ2ITQX
 :APPT_WARNTIME: 60
 :END:
   <2020-02-20 Thu 19:00>--<2020-02-20 Thu 22:00>
@@ -175,7 +175,7 @@ RECURRENCE-ID;TZID=Europe/Berlin:20200421T120010
 END:VEVENT
 END:VCALENDAR""","""* Crisis
 :PROPERTIES:
-:UID: 835f0339-d824-42f4-9e1e-82b45229d75d
+:ID: 835f0339-d824-42f4-9e1e-82b45229d75d
 :END:
   <2020-04-19 Sun 13:00>--<2020-04-19 Sun 14:00>
   <2020-04-20 Mon 13:00>--<2020-04-20 Mon 14:00>
@@ -186,20 +186,20 @@ END:VCALENDAR""","""* Crisis
 * Crisis Management
 :PROPERTIES:
 :LOCATION: Office
-:UID: 835f0339-d824-42f4-9e1e-82b45229d75d
+:ID: 835f0339-d824-42f4-9e1e-82b45229d75d
 :END:
   <2020-04-22 Wed 17:00>--<2020-04-22 Wed 19:00>
 
 * Crisis Breakdown
 :PROPERTIES:
 :LOCATION: Volcano
-:UID: 835f0339-d824-42f4-9e1e-82b45229d75d
+:ID: 835f0339-d824-42f4-9e1e-82b45229d75d
 :END:
   <2020-04-24 Fri 21:00>--<2020-04-24 Fri 22:00>
 
 * Daily
 :PROPERTIES:
-:UID: e5a638dc-3125-454b-856d-60d3015bed2e
+:ID: e5a638dc-3125-454b-856d-60d3015bed2e
 :END:
   <2020-04-20 Mon 12:00>--<2020-04-20 Mon 13:00>
   <2020-04-22 Wed 12:00>--<2020-04-22 Wed 13:00>
@@ -208,7 +208,7 @@ END:VCALENDAR""","""* Crisis
 
 * Daily later
 :PROPERTIES:
-:UID: e5a638dc-3125-454b-856d-60d3015bed2e
+:ID: e5a638dc-3125-454b-856d-60d3015bed2e
 :END:
   <2020-04-21 Tue 15:00>--<2020-04-21 Tue 16:00>""",id="many changes")
     ],
