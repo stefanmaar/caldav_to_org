@@ -68,7 +68,6 @@ def get_properties(event):
     if "RRULE" in event:
         yield "RRULE", rrule_cleanup(event["RRULE"])
 
-
     for comp in event.subcomponents:
         if comp.name == "VALARM":
             trigger = int(-1 * comp["TRIGGER"].dt.total_seconds() / 60)
@@ -131,10 +130,20 @@ class OrgEvent(org.OrgEntry):
     @property
     def tags(self):
         "Tags"
-        return org.tags(
-            self.entry.get("CATEGORIES", []),
+
+        _tags = self.entry.get("CATEGORIES", [])
+        if not isinstance(_tags, list):
+            _tags = [_tags]
+
+        _tags = map(
             lambda x: x.to_ical().decode("utf-8").replace(" ", "-").replace(",", ":"),
+            _tags,
         )
+
+        if "RRULE" in self.entry or "RECURRENCE-ID" in self.entry:
+            _tags = list(_tags) + ["rrule"]
+
+        return org.tags(_tags)
 
     def date_block(self, start, end, exceptions=None):
         "Evaluate which active dates the event has"

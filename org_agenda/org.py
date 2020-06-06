@@ -10,12 +10,10 @@ Convert Caldav to org-contacts
 import types
 
 
-def tags(tag_list, process=lambda x: x):
+def tags(tag_list):
     "Tags"
-    if not isinstance(tag_list, (list, types.GeneratorType)):
-        tag_list = [tag_list]
 
-    _tags = ":".join(map(process, tag_list))
+    _tags = ":".join(tag_list)
 
     if _tags:
         return f"  :{_tags}:"

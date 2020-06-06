@@ -95,7 +95,7 @@ SUMMARY:Monthly meeting
 RRULE:FREQ=MONTHLY;BYDAY=WE;BYSETPOS=4
 EXDATE;TZID=Europe/Berlin:20200325T190000
 END:VEVENT""",
-            """* Monthly meeting
+            """* Monthly meeting  :rrule:
 :PROPERTIES:
 :ID: forthofmonth
 :RRULE: FREQ=MONTHLY;BYDAY=WE;BYSETPOS=4
@@ -118,7 +118,7 @@ TRIGGER:-PT60M
 END:VALARM
 END:VEVENT
 """,
-            """* travel
+            """* travel  :rrule:
 :PROPERTIES:
 :LOCATION: train
 :ID: J480MNXCKM88LL7UQ2ITQX
@@ -175,7 +175,7 @@ DTEND;TZID=Europe/Berlin:20200421T160000
 SUMMARY:Daily later
 RECURRENCE-ID;TZID=Europe/Berlin:20200421T120010
 END:VEVENT
-END:VCALENDAR""","""* Crisis
+END:VCALENDAR""","""* Crisis  :rrule:
 :PROPERTIES:
 :ID: 835f0339-d824-42f4-9e1e-82b45229d75d
 :RRULE: FREQ=DAILY;UNTIL=20200425T220000Z
@@ -186,21 +186,21 @@ END:VCALENDAR""","""* Crisis
   <2020-04-23 Thu 13:00>--<2020-04-23 Thu 14:00>
   <2020-04-25 Sat 13:00>--<2020-04-25 Sat 14:00>
 
-* Crisis Management
+* Crisis Management  :rrule:
 :PROPERTIES:
 :LOCATION: Office
 :ID: 835f0339-d824-42f4-9e1e-82b45229d75d
 :END:
   <2020-04-22 Wed 17:00>--<2020-04-22 Wed 19:00>
 
-* Crisis Breakdown
+* Crisis Breakdown  :rrule:
 :PROPERTIES:
 :LOCATION: Volcano
 :ID: 835f0339-d824-42f4-9e1e-82b45229d75d
 :END:
   <2020-04-24 Fri 21:00>--<2020-04-24 Fri 22:00>
 
-* Daily
+* Daily  :rrule:
 :PROPERTIES:
 :ID: e5a638dc-3125-454b-856d-60d3015bed2e
 :RRULE: FREQ=WEEKLY;COUNT=5;BYDAY=MO,TU,WE,TH,FR
@@ -210,7 +210,7 @@ END:VCALENDAR""","""* Crisis
   <2020-04-23 Thu 12:00>--<2020-04-23 Thu 13:00>
   <2020-04-24 Fri 12:00>--<2020-04-24 Fri 13:00>
 
-* Daily later
+* Daily later  :rrule:
 :PROPERTIES:
 :ID: e5a638dc-3125-454b-856d-60d3015bed2e
 :END:
