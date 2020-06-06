@@ -65,6 +65,10 @@ def get_properties(event):
                 prop = "ID"
             yield prop, value
 
+    if "RRULE" in event:
+        yield "RRULE", rrule_cleanup(event["RRULE"])
+
+
     for comp in event.subcomponents:
         if comp.name == "VALARM":
             trigger = int(-1 * comp["TRIGGER"].dt.total_seconds() / 60)
