@@ -17,7 +17,7 @@ setup(
     url="https://gitlab.com/Titan-C/org-mode-agenda",
     packages=["org_agenda"],
     entry_points={"console_scripts": ["org_agenda_sync = org_agenda:main"]},
-    install_requires=["requests", "icalendar", "tzlocal", "vobject"],
+    install_requires=["requests", "icalendar", "tzlocal", "vobject", "aiohttp"],
     license="GNU General Public License v3 or later (GPLv3+)",
     classifiers=[
         "Programming Language :: Python :: 3",

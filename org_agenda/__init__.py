@@ -10,13 +10,15 @@ Goal of the script
 # License:GPL-3
 
 import argparse
+import asyncio
 import configparser
 import hashlib
 import logging
 import os
-import subprocess
 
 import requests
+import aiohttp
+
 from org_agenda.ical2org import org_events
 from org_agenda.cards2org import org_contacts
 
@@ -24,19 +26,21 @@ LOGGER = logging.getLogger("Org_calendar")
 LOGGER.addHandler(logging.StreamHandler())
 
 
-def passwordstore(address: str) -> bytes:
+async def passwordstore(address: str) -> str:
     """Get password from passwordstore address"""
 
-    process = subprocess.run(
-        ["pass", "show", address], stdout=subprocess.PIPE, check=True
+    process = await asyncio.create_subprocess_shell(
+        f"pass show {address}", stdout=asyncio.subprocess.PIPE
     )
+    stdout, _ = await process.communicate()
+
     if process.returncode == 0:
-        return process.stdout.split()[0]
+        return stdout.decode("utf-8").split()[0]
 
     raise ValueError("Unknown password address")
 
 
-def download(url, section, force):
+async def download(url, section, force, session):
     "Return calendar from download or cache"
     hash_url = hashlib.sha1(url.encode("UTF-8")).hexdigest()[:10]
     url_file = f"/tmp/agenda-{hash_url}"
@@ -45,27 +49,30 @@ def download(url, section, force):
             return txt.read()
 
     user = section["user"]
-    password = passwordstore(section["passwordstore"])
+    password = await passwordstore(section["passwordstore"])
 
     LOGGER.info("Downloading from: %s", url)
+    async with session.get(url, auth=aiohttp.BasicAuth(user, password)) as reply:
+        if reply.status == 200:
+            text = await reply.text()
+            with open(url_file, "w") as txt:
+                txt.write(text)
+            return text
 
-    reply = requests.get(url, auth=(user, password))
-
-    if reply.status_code == 200:
-        with open(url_file, "w") as txt:
-            txt.write(reply.text)
-        return reply.text
-
-    raise ValueError("Could not get calendar: %s" % url)
+        raise ValueError(f"Could not get calendar: {url}\n{reply}")
 
 
-def get_resource(config, resource, force):
+async def get_resource(config, resource, force):
     "RESOURCE{calendars,addressbooks} are returned given the CONFIG's urls, FORCE download"
 
-    for section in config.sections():
-        for entry in config[section].get(resource, "").split():
-            url = config[section]["url"].format(entry)
-            yield download(url, config[section], force)
+    cal = []
+    async with aiohttp.ClientSession() as session:
+        for section in config.sections():
+            for entry in config[section].get(resource, "").split():
+                url = config[section]["url"].format(entry)
+                cal.append(download(url, config[section], force, session))
+
+        return await asyncio.gather(*cal)
 
 
 def write_agenda(config, args):
@@ -74,7 +81,7 @@ def write_agenda(config, args):
     if args.url:
         calendars = [requests.get(args.url, auth=("username", "")).text]
     else:
-        calendars = get_resource(config, "calendars", args.force)
+        calendars = asyncio.run(get_resource(config, "calendars", args.force))
 
     ahead = int(config["DEFAULT"].get("ahead", 50))
     back = int(config["DEFAULT"].get("back", 14))
@@ -82,6 +89,7 @@ def write_agenda(config, args):
 
     if args.url:
         print("\n\n".join(dict.fromkeys(org_events(calendars, ahead, back))))
+        return
 
     with open(outfile, "w") as fid:
         LOGGER.info("Writing calendars to: %s", outfile)
@@ -121,9 +129,7 @@ def parse_arguments():
     parser.add_argument(
         "--contacts", action="store_true", help="Download carddav to org-contacts"
     )
-    parser.add_argument(
-        "-r", "--url", help="force direct download from url no auth"
-    )
+    parser.add_argument("-r", "--url", help="force direct download from url no auth")
     parser.add_argument("-v", "--verbose", action="count", default=0)
 
     return parser.parse_args()
