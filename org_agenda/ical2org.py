@@ -59,8 +59,7 @@ def get_properties(event):
     "Extract relevant properties"
     properties = ("LOCATION", "UID")
     for prop in properties:
-        value = event.get(prop, "").strip()
-        if value:
+        if value := event.get(prop, "").strip():
             if prop == "UID":
                 prop = "ID"
             yield prop, value
@@ -76,8 +75,7 @@ def get_properties(event):
 
 def rrule_cleanup(rrule_conf):
     "Repetition rule needs to respect some constrains, return clean string"
-    until = rrule_conf.get("UNTIL")
-    if until:
+    if until := rrule_conf.get("UNTIL"):
         rrule_conf["UNTIL"][0] = until[0].astimezone(tz.UTC)
 
     return rrule_conf.to_ical().decode("utf-8")

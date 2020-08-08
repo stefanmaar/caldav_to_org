@@ -12,7 +12,6 @@ Goal of the script
 import argparse
 import configparser
 import hashlib
-import json
 import logging
 import os
 import subprocess

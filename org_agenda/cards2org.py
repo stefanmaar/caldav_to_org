@@ -53,16 +53,14 @@ def get_properties(contact):
             name = "PHONE"
 
         # Collect type attributes:
-        attribs = ", ".join(prop.params.get("TYPE", []))
-        if attribs:
+        if attribs := ", ".join(prop.params.get("TYPE", [])):
             attribs = " (%s)" % attribs
 
         # Make sure that there are no newline chars left as that would
         # break org's property format:
         if isinstance(value, (list, tuple)):
             value = ", ".join(value)
-        value = value.replace("\n", ", ")
-        if value:
+        if value := value.replace("\n", ", "):
             yield name, value + attribs
 
 

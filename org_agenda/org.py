@@ -7,15 +7,11 @@ Convert Caldav to org-contacts
 # License: GPL-3
 # Inspired https://gist.github.com/tmalsburg/9747104
 
-import types
-
 
 def tags(tag_list):
     "Tags"
 
-    _tags = ":".join(tag_list)
-
-    if _tags:
+    if _tags := ":".join(tag_list):
         return f"  :{_tags}:"
     return ""
 
