@@ -76,6 +76,8 @@ def get_properties(event):
 def rrule_cleanup(rrule_conf):
     "Repetition rule needs to respect some constrains, return clean string"
     if until := rrule_conf.get("UNTIL"):
+        if not hasattr(until[0], "hour"):
+            until[0] = put_tz(until[0])
         rrule_conf["UNTIL"][0] = until[0].astimezone(tz.UTC)
 
     return rrule_conf.to_ical().decode("utf-8")

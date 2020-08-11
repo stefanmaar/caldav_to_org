@@ -8,16 +8,18 @@ from freezegun import freeze_time
 from icalendar import Calendar
 from org_agenda import ical2org
 
+
 @contextmanager
 def on_date(date, timezone):
     """Set the time and timezone for the test"""
 
-    os.environ['TZ'] = timezone
+    os.environ["TZ"] = timezone
     time.tzset()
     with freeze_time(date):
         yield
-    os.environ.pop('TZ')
+    os.environ.pop("TZ")
     time.tzset()
+
 
 @pytest.mark.parametrize(
     "ics, result",
@@ -137,7 +139,8 @@ END:VEVENT
   <2020-04-23 Thu 19:00>--<2020-04-23 Thu 22:00>""",
             id="duration and weekly repeat",
         ),
-        pytest.param("""BEGIN:VCALENDAR
+        pytest.param(
+            """BEGIN:VCALENDAR
 BEGIN:VEVENT
 UID:835f0339-d824-42f4-9e1e-82b45229d75d
 DTSTART;TZID=Europe/Berlin:20200419T130000
@@ -175,7 +178,8 @@ DTEND;TZID=Europe/Berlin:20200421T160000
 SUMMARY:Daily later
 RECURRENCE-ID;TZID=Europe/Berlin:20200421T120010
 END:VEVENT
-END:VCALENDAR""","""* Crisis  :rrule:
+END:VCALENDAR""",
+            """* Crisis  :rrule:
 :PROPERTIES:
 :ID: 835f0339-d824-42f4-9e1e-82b45229d75d
 :RRULE: FREQ=DAILY;UNTIL=20200425T220000Z
@@ -214,11 +218,44 @@ END:VCALENDAR""","""* Crisis  :rrule:
 :PROPERTIES:
 :ID: e5a638dc-3125-454b-856d-60d3015bed2e
 :END:
-  <2020-04-21 Tue 15:00>--<2020-04-21 Tue 16:00>""",id="many changes")
+  <2020-04-21 Tue 15:00>--<2020-04-21 Tue 16:00>""",
+            id="many changes",
+        ),
     ],
 )
 @on_date("2020-03-19", "Europe/Berlin")
 def test_conversion(ics, result):
+    events = "\n\n".join(ical2org.org_events([ics], 40, 30))
+    print(events)
+    assert events == result
+
+
+@pytest.mark.parametrize(
+    "ics, result",
+    [
+        pytest.param(
+            """BEGIN:VCALENDAR
+BEGIN:VEVENT
+UID:b53fbf6d-074e-469b-8e2f-07d3c13cf386
+RRULE:FREQ=WEEKLY;UNTIL=20200904;INTERVAL=5;BYDAY=MO
+SUMMARY:Oscar: C&A Ticketdienst
+DTSTART;VALUE=DATE:20191230
+DTEND;VALUE=DATE:20200104
+END:VEVENT
+END:VCALENDAR""",
+            """* Oscar: C&A Ticketdienst  :rrule:
+:PROPERTIES:
+:ID: b53fbf6d-074e-469b-8e2f-07d3c13cf386
+:RRULE: FREQ=WEEKLY;UNTIL=20200903T220000Z;INTERVAL=5;BYDAY=MO
+:END:
+  <2020-07-27 Mon>--<2020-07-31 Fri>
+  <2020-08-31 Mon>--<2020-09-04 Fri>""",
+            id="Full day repeated events",
+        )
+    ],
+)
+@on_date("2020-08-19", "Europe/Berlin")
+def test_conversion_2(ics, result):
     events = "\n\n".join(ical2org.org_events([ics], 40, 30))
     print(events)
     assert events == result
