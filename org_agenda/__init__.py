@@ -99,7 +99,7 @@ def write_agenda(config, args):
 
 def write_addressbook(config, args):
     "Write Contacts to file"
-    addresses = get_resource(config, "addressbooks", args.force)
+    addresses = asyncio.run(get_resource(config, "addressbooks", args.force))
     outfile = os.path.expanduser(config["DEFAULT"]["contacts_outfile"])
 
     with open(outfile, "w") as fid:
