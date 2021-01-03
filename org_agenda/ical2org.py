@@ -125,7 +125,7 @@ class OrgEvent(org.OrgEntry):
 
         self.description = (
             event["DESCRIPTION"].replace(" \n", "\n") if "DESCRIPTION" in event else ""
-        )
+        ).replace("*", "-")
 
     @property
     def tags(self):
