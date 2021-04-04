@@ -11,7 +11,7 @@ Convert Caldav to org-contacts
 def tags(tag_list):
     "Tags"
 
-    if _tags := ":".join(tag_list):
+    if _tags := ":".join(tag_list).replace("-", "_"):
         return f"  :{_tags}:"
     return ""
 
