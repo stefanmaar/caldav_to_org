@@ -3,17 +3,13 @@ from setuptools import setup
 package = "caldav_to_org"
 version = "0.1"
 
-with open("README.rst", encoding="utf-8") as f:
-    long_description = f.read()
-
 setup(
     name=package,
     version=version,
     author="Óscar Nájera, Stefan Mertl",
     author_email="hi@oscarnajera.com,stefan@mertl-research.at",
     description="Import icalendar agendas to Orgmode",
-    long_description=long_description,
-    long_description_content_type="text/x-rst",
+    long_description="",
     url="https://github.com/stefanmaar/caldav_to_org.git",
     packages=["caldav_to_org"],
     entry_points={"console_scripts": ["org_caldav_import = caldav_to_org:main"]},
