@@ -15,6 +15,7 @@ import configparser
 import hashlib
 import logging
 import os
+import re
 
 import requests
 import aiohttp
@@ -68,7 +69,7 @@ async def get_resource(config, resource, force):
     cal = []
     async with aiohttp.ClientSession() as session:
         for section in config.sections():
-            for entry in config[section].get(resource, "").split():
+            for entry in re.split('[ ,]', config[section].get(resource, "")):
                 url = config[section]["url"].format(entry)
                 cal.append(download(url, config[section], force, session))
 
@@ -93,7 +94,7 @@ def write_agenda(config, args):
 
     with open(outfile, "w") as fid:
         LOGGER.info("Writing calendars to: %s", outfile)
-        fid.write("# -*- after-save-hook: cal-sync-push; -*-\n")
+        #fid.write("# -*- after-save-hook: cal-sync-push; -*-\n")
         fid.write("\n\n".join(dict.fromkeys(org_events(calendars, ahead, back))))
         fid.write("\n")
 
