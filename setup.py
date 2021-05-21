@@ -12,7 +12,7 @@ setup(
     long_description="",
     url="https://github.com/stefanmaar/caldav_to_org.git",
     packages=["caldav_to_org"],
-    entry_points={"console_scripts": ["org_caldav_import = caldav_to_org:main"]},
+    entry_points={"console_scripts": ["caldav_to_org = caldav_to_org:main"]},
     install_requires=["requests", "icalendar", "tzlocal", "vobject", "aiohttp"],
     license="GNU General Public License v3 or later (GPLv3+)",
     classifiers=[
