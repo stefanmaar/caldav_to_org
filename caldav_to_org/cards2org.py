@@ -9,7 +9,7 @@ Convert Caldav to org-contacts
 
 import dateutil.parser
 import vobject  # type: ignore
-from org_agenda import org
+from caldav_to_org import org
 
 
 def get_properties(contact):

@@ -20,8 +20,8 @@ import re
 import requests
 import aiohttp
 
-from org_agenda.ical2org import org_events
-from org_agenda.cards2org import org_contacts
+from caldav_to_org.ical2org import org_events
+from caldav_to_org.cards2org import org_contacts
 
 LOGGER = logging.getLogger("Org_calendar")
 LOGGER.addHandler(logging.StreamHandler())

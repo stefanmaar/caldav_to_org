@@ -13,7 +13,7 @@ from dateutil.rrule import rrulestr
 from icalendar import Calendar  # type: ignore
 from pytz import utc
 from tzlocal import get_localzone  # type: ignore
-from org_agenda import org
+from caldav_to_org import org
 
 # inspiration from
 # https://www.nylas.com/blog/calendar-events-rrules/
